@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+{{ super() }}
+<h1 style="text-align: center;">Results [{{ event_name }}]</h1>
+<div class="container" style="width: 80%; margin-left: 10%; margin-right: 10%;">
+{% if listEmpty %}
+	<h2 style="text-align: center;"> No data to display</h2>
+{% else %}
+	<table id="data_table" class="table table-striped table-bordered hover" style="width: 100%;">
+		<thead><tr>
+			{% for col in dataHead %}
+				<td>{{ col }}</td>
+			{% endfor %}
+		</tr></thead>
+			</tr>
+		{% for row in content_tokens %}
+			<tr>
+				{% for col in row %}
+					<td style="vertical-align: middle;">{{ col }}</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	{% endif %}
+	</table>
+	<button onclick="Export()">Export as Excel</button>
+</div>
+{% endblock %}
+{% block html %}
+{{ super() }}
+<script type="text/javascript" src="/static/js/jquery.table2excel.min.js"></script>
+<script type="text/javascript">
+	function Export() {
+		$('#data_table').table2excel({
+			filename: '{{ event_name }}_results.xls'
+		});
+	}
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-4 ">
+				<h3>Add Event</h3>
+				<br>
+				<form action="" method="post" enctype="multipart/form-data">
+					<dl>
+						{{ render_field(form.eventname) }}
+						{{ render_field(form.eventroute) }}
+						{{ form.csrf_token }}
+					</dl>
+					{{ form.submit(class="form-control btn btn-default") }}
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

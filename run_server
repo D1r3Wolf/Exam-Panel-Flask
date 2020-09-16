@@ -1,0 +1,1 @@
+sudo gunicorn3 -w 6 -b 0.0.0.0:80 app:app --access-logfile=log/access.log --error-logfile=log/error.log --capture-output --enable-stdio-inheritance &

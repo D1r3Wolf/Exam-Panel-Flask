@@ -1,0 +1,156 @@
+{% from "_form-field.html" import render_field %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Teckzite 2020 </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="/static/bootstrap/css/bootstrap.min.css?bootstrap=3.3.7.1.dev1" rel="stylesheet">
+	<link rel="stylesheet" href="/static/DataTables/datatables.min.css">
+	<link rel="stylesheet" href="/static/fontawesome-free-5.12.1-web/css/all.min.css">
+	<style>
+	.footer-block {
+		position: fixed;
+		width: 100%;
+		bottom: 0px;
+		text-align: center;
+		background-color: #717171;
+		padding-top: 4px;
+		padding-bottom: 4px;
+		z-index: 10;
+		color: white;
+	}
+	body{
+		z-index: -10;
+	}
+	</style>
+
+  </head>
+  <body>
+
+<div class="container">
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-12">
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					{% for category, message in messages %}
+						<div class="alert alert-{{ category }} alert-dismissible" role="alert" style='font-family: "Lucida Console", Monaco, monospace'>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							{{ message }}
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endwith %}
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	{% block content %}
+	<br>
+	{% endblock %}
+	<h2 style="text-align: center;">{{ title }}</h2><br>
+	<div class="col-md-7" style="margin-right: 15px;">
+		<div class="row">
+			<h3>Files</h3>
+			<table class="table">
+				<thead>
+					<th>File Name</th>
+					<th>Download Link</th>
+				</thead>
+			{% for row in files %}
+				<tr>
+					<td>{{ row['file_name'] }}</td>
+					<td><button class="btn view-btn" onclick="window.open('/download/{{ row['file_path'] }}', '_blank');" title="Upload Files" style="float: left; margin-left: 5px;">Download &nbsp;<i class="fa fa-arrow-right"></i></button></td>
+				</tr>
+			{% endfor %}
+			</table>
+		</div>
+		<br>
+		{% if pwd_sss %}
+		<div class="row">
+			<h3>Passwords</h3>
+			<table class="table">
+				<thead>
+					<th>Name</th>
+					<th>Password</th>
+				</thead>
+			{% for row in passwds %}
+				<tr>
+					<td>{{ row['title'] }}</td>
+					<td>{{ row['passwd'] }}</td>
+				</tr>
+			{% endfor %}
+			</table>
+		</div>
+		{% endif %}
+	</div>
+	{% if tst_sss %}
+	<div class="col-md-4" style="margin-left: 15px;">
+		<div class="row">
+			<h3>Self Check</h3>
+			<br>
+			<dl>
+				<dt><label for="file_name">Team ID</label>
+				<dd><input class="form-control" id="teamid" name="teamid" type="text" required autocomplete="off">
+				</dd>
+				</dt>
+			</dl>
+			<input class="form-control btn btn-default" type="submit" value="Check" onclick="check_team();">
+		</div>
+		<div class="row">
+			<h3>TST Upload</h3>
+			<br>
+			<form action="/tst/{{ upload_hash }}?route={{ event_route }}" method="post" enctype="multipart/form-data">
+				<dl>
+					{{ render_field(form.tst_file) }}
+					{{ form.csrf_token }}
+				</dl>
+				{{ form.submit(class="form-control btn btn-default") }}
+			</form>
+		</div>
+	</div>
+	{% endif %}
+</div>
+
+	<script src="/static/bootstrap/jquery.min.js?bootstrap=3.3.7.1.dev1"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js?bootstrap=3.3.7.1.dev1"></script>
+	<script src="/static/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript">
+
+</script>
+
+  </body>
+<br><br><br><br>
+<footer class="page-footer font-small blue footer-block">
+  <div class="footer-copyright text-center py-3">© 2019 Copyright:
+    <a href="https://teckzite.org/team.php" style="color: yellow;"> Teckzite Web Team.</a> &nbsp; For any queries : Contact (Ajay - <i class="fa fa-phone"></i> XXXXXXXXXX) or (Akash - <i class="fa fa-phone"></i> XXXXXXXXXX)
+  </div>
+</footer>
+
+<script type="text/javascript">
+	function check_team() {
+		teamid = $('#teamid')[0].value;
+		if (teamid.match(/^Team_[0-9]{6}$/)) {
+			$.ajax({
+				url: '/self-check/{{ upload_hash }}',
+				type: 'POST',
+				data: 'teamid=' + teamid,
+				success: function(data, textStatus, jqXHR) {
+					// console.log(textStatus);
+					if (textStatus == 'success') alert(data);
+					else alert('Error Occured!');
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert('Network Problem, contact organiser!');
+				}
+			});
+		} else {
+			alert('Invalid Team ID!');
+		}
+	}
+</script>
+
+</html>

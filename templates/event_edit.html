@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-4 ">
+				{% if event_name %}
+				<h3>Edit Event - {{ event_name }}</h3>
+				{% else %}
+				<h3>Add Event</h3>
+				{% endif %}
+				<br>
+				<form action="" method="post" enctype="multipart/form-data">
+					<dl>
+						{% if not event_name %}
+						{{ render_field(form.event) }}
+						{% endif %}
+						{{ render_field(form.imgs, accept='image/*') }}
+						{{ render_field(form.ips) }}
+						{{ form.csrf_token }}
+					</dl>
+					{{ form.submit(class="form-control btn btn-default") }}
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
